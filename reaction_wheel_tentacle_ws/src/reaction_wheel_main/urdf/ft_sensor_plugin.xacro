@@ -1,0 +1,212 @@
+<?xml version="1.0" ?>
+<robot name="reaction_wheel" xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+<gazebo reference="tentacle_right_link_1_joint">
+  <provideFeedback>true</provideFeedback>
+</gazebo>
+<gazebo>
+  <plugin name="tentacle_right_link_1_joint_ft_sensor_plugin" filename="libft_sensor_plugin.so">
+    <robotNamespace>/reaction_wheel</robotNamespace>
+    <jointName>tentacle_right_link_1_joint</jointName>
+    <topicName>/tentacle_right_link_1_joint_ft_sensor</topicName>
+    <gaussianNoise>0.0</gaussianNoise>
+    <updateRate>1.0</updateRate>
+  </plugin>
+</gazebo>
+
+<gazebo reference="tentacle_right_link_2_joint">
+  <provideFeedback>true</provideFeedback>
+</gazebo>
+<gazebo>
+  <plugin name="tentacle_right_link_2_joint_ft_sensor_plugin" filename="libft_sensor_plugin.so">
+    <robotNamespace>/reaction_wheel</robotNamespace>
+    <jointName>tentacle_right_link_2_joint</jointName>
+    <topicName>/tentacle_right_link_2_joint_ft_sensor</topicName>
+    <gaussianNoise>0.0</gaussianNoise>
+    <updateRate>1.0</updateRate>
+  </plugin>
+</gazebo>
+ 
+<gazebo reference="tentacle_right_link_3_joint">
+  <provideFeedback>true</provideFeedback>
+</gazebo>
+<gazebo>
+  <plugin name="tentacle_right_link_3_joint_ft_sensor_plugin" filename="libft_sensor_plugin.so">
+    <robotNamespace>/reaction_wheel</robotNamespace>
+    <jointName>tentacle_right_link_3_joint</jointName>
+    <topicName>/tentacle_right_link_3_joint_ft_sensor</topicName>
+    <gaussianNoise>0.0</gaussianNoise>
+    <updateRate>1.0</updateRate>
+  </plugin>
+</gazebo>
+ 
+<gazebo reference="tentacle_right_link_4_joint">
+  <provideFeedback>true</provideFeedback>
+</gazebo>
+<gazebo>
+  <plugin name="tentacle_right_link_4_joint_ft_sensor_plugin" filename="libft_sensor_plugin.so">
+    <robotNamespace>/reaction_wheel</robotNamespace>
+    <jointName>tentacle_right_link_4_joint</jointName>
+    <topicName>/tentacle_right_link_4_joint_ft_sensor</topicName>
+    <gaussianNoise>0.0</gaussianNoise>
+    <updateRate>1.0</updateRate>
+  </plugin>
+</gazebo>
+
+<gazebo reference="tentacle_left_link_1_joint">
+  <provideFeedback>true</provideFeedback>
+</gazebo>
+<gazebo>
+  <plugin name="tentacle_left_link_1_joint_ft_sensor_plugin" filename="libft_sensor_plugin.so">
+    <robotNamespace>/reaction_wheel</robotNamespace>
+    <jointName>tentacle_left_link_1_joint</jointName>
+    <topicName>/tentacle_left_link_1_joint_ft_sensor</topicName>
+    <gaussianNoise>0.0</gaussianNoise>
+    <updateRate>1.0</updateRate>
+  </plugin>
+</gazebo>
+
+<gazebo reference="tentacle_left_link_2_joint">
+  <provideFeedback>true</provideFeedback>
+</gazebo>
+<gazebo>
+  <plugin name="tentacle_left_link_2_joint_ft_sensor_plugin" filename="libft_sensor_plugin.so">
+    <robotNamespace>/reaction_wheel</robotNamespace>
+    <jointName>tentacle_left_link_2_joint</jointName>
+    <topicName>/tentacle_left_link_2_joint_ft_sensor</topicName>
+    <gaussianNoise>0.0</gaussianNoise>
+    <updateRate>1.0</updateRate>
+  </plugin>
+</gazebo>
+ 
+<gazebo reference="tentacle_left_link_3_joint">
+  <provideFeedback>true</provideFeedback>
+</gazebo>
+<gazebo>
+  <plugin name="tentacle_left_link_3_joint_ft_sensor_plugin" filename="libft_sensor_plugin.so">
+    <robotNamespace>/reaction_wheel</robotNamespace>
+    <jointName>tentacle_left_link_3_joint</jointName>
+    <topicName>/tentacle_left_link_3_joint_ft_sensor</topicName>
+    <gaussianNoise>0.0</gaussianNoise>
+    <updateRate>1.0</updateRate>
+  </plugin>
+</gazebo>
+ 
+<gazebo reference="tentacle_left_link_4_joint">
+  <provideFeedback>true</provideFeedback>
+</gazebo>
+<gazebo>
+  <plugin name="tentacle_left_link_4_joint_ft_sensor_plugin" filename="libft_sensor_plugin.so">
+    <robotNamespace>/reaction_wheel</robotNamespace>
+    <jointName>tentacle_left_link_4_joint</jointName>
+    <topicName>/tentacle_left_link_4_joint_ft_sensor</topicName>
+    <gaussianNoise>0.0</gaussianNoise>
+    <updateRate>1.0</updateRate>
+  </plugin>
+</gazebo>
+
+<gazebo reference="tentacle_up_link_1_joint">
+  <provideFeedback>true</provideFeedback>
+</gazebo>
+<gazebo>
+  <plugin name="tentacle_up_link_1_joint_ft_sensor_plugin" filename="libft_sensor_plugin.so">
+    <robotNamespace>/reaction_wheel</robotNamespace>
+    <jointName>tentacle_up_link_1_joint</jointName>
+    <topicName>/tentacle_up_link_1_joint_ft_sensor</topicName>
+    <gaussianNoise>0.0</gaussianNoise>
+    <updateRate>1.0</updateRate>
+  </plugin>
+</gazebo>
+
+<gazebo reference="tentacle_up_link_2_joint">
+  <provideFeedback>true</provideFeedback>
+</gazebo>
+<gazebo>
+  <plugin name="tentacle_up_link_2_joint_ft_sensor_plugin" filename="libft_sensor_plugin.so">
+    <robotNamespace>/reaction_wheel</robotNamespace>
+    <jointName>tentacle_up_link_2_joint</jointName>
+    <topicName>/tentacle_up_link_2_joint_ft_sensor</topicName>
+    <gaussianNoise>0.0</gaussianNoise>
+    <updateRate>1.0</updateRate>
+  </plugin>
+</gazebo>
+
+<gazebo reference="tentacle_up_link_3_joint">
+  <provideFeedback>true</provideFeedback>
+</gazebo>
+<gazebo>
+  <plugin name="tentacle_up_link_3_joint_ft_sensor_plugin" filename="libft_sensor_plugin.so">
+    <robotNamespace>/reaction_wheel</robotNamespace>
+    <jointName>tentacle_up_link_3_joint</jointName>
+    <topicName>/tentacle_up_link_3_joint_ft_sensor</topicName>
+    <gaussianNoise>0.0</gaussianNoise>
+    <updateRate>1.0</updateRate>
+  </plugin>
+</gazebo>
+
+<gazebo reference="tentacle_up_link_4_joint">
+  <provideFeedback>true</provideFeedback>
+</gazebo>
+<gazebo>
+  <plugin name="tentacle_up_link_4_joint_ft_sensor_plugin" filename="libft_sensor_plugin.so">
+    <robotNamespace>/reaction_wheel</robotNamespace>
+    <jointName>tentacle_up_link_4_joint</jointName>
+    <topicName>/tentacle_up_link_4_joint_ft_sensor</topicName>
+    <gaussianNoise>0.0</gaussianNoise>
+    <updateRate>1.0</updateRate>
+  </plugin>
+</gazebo>
+
+<gazebo reference="tentacle_down_link_1_joint">
+  <provideFeedback>true</provideFeedback>
+</gazebo>
+<gazebo>
+  <plugin name="tentacle_down_link_1_joint_ft_sensor_plugin" filename="libft_sensor_plugin.so">
+    <robotNamespace>/reaction_wheel</robotNamespace>
+    <jointName>tentacle_down_link_1_joint</jointName>
+    <topicName>/tentacle_down_link_1_joint_ft_sensor</topicName>
+    <gaussianNoise>0.0</gaussianNoise>
+    <updateRate>1.0</updateRate>
+  </plugin>
+</gazebo>
+
+<gazebo reference="tentacle_down_link_2_joint">
+  <provideFeedback>true</provideFeedback>
+</gazebo>
+<gazebo>
+  <plugin name="tentacle_down_link_2_joint_ft_sensor_plugin" filename="libft_sensor_plugin.so">
+    <robotNamespace>/reaction_wheel</robotNamespace>
+    <jointName>tentacle_down_link_2_joint</jointName>
+    <topicName>/tentacle_down_link_2_joint_ft_sensor</topicName>
+    <gaussianNoise>0.0</gaussianNoise>
+    <updateRate>1.0</updateRate>
+  </plugin>
+</gazebo>
+
+<gazebo reference="tentacle_down_link_3_joint">
+  <provideFeedback>true</provideFeedback>
+</gazebo>
+<gazebo>
+  <plugin name="tentacle_down_link_3_joint_ft_sensor_plugin" filename="libft_sensor_plugin.so">
+    <robotNamespace>/reaction_wheel</robotNamespace>
+    <jointName>tentacle_down_link_3_joint</jointName>
+    <topicName>/tentacle_down_link_3_joint_ft_sensor</topicName>
+    <gaussianNoise>0.0</gaussianNoise>
+    <updateRate>1.0</updateRate>
+  </plugin>
+</gazebo>
+
+<gazebo reference="tentacle_down_link_4_joint">
+  <provideFeedback>true</provideFeedback>
+</gazebo>
+<gazebo>
+  <plugin name="tentacle_down_link_4_joint_ft_sensor_plugin" filename="libft_sensor_plugin.so">
+    <robotNamespace>/reaction_wheel</robotNamespace>
+    <jointName>tentacle_down_link_4_joint</jointName>
+    <topicName>/tentacle_down_link_4_joint_ft_sensor</topicName>
+    <gaussianNoise>0.0</gaussianNoise>
+    <updateRate>1.0</updateRate>
+  </plugin>
+</gazebo>
+
+</robot>

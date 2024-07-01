@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<robot name="cubesat" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find cubesat_description)/urdf/materials.xacro" />
+<xacro:include filename="$(find cubesat_description)/urdf/cubesat.trans" />
+<xacro:include filename="$(find cubesat_description)/urdf/cubesat.gazebo" />
+<link name="base_link">
+  <inertial>
+    <origin xyz="0.000500648953679641 -0.00018140463958650211 -1.898172859337299e-05" rpy="0 0 0"/>
+    <mass value="30"/>
+    <inertia ixx="1.66667" iyy="1.66667" izz="1.66667" ixy="-8e-06" iyz="0.0" ixz="1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cubesat_description/meshes/base_link.stl" scale="0.009 0.009 0.009"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://cubesat_description/meshes/base_link.stl" scale="0.009 0.009 0.009"/>
+    </geometry>
+  </collision>
+</link>
+
+</robot>

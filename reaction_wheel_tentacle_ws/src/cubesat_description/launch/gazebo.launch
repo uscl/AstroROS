@@ -1,0 +1,11 @@
+<launch>
+  <param name="cubesat_description" command="$(find xacro)/xacro $(find cubesat_description)/urdf/cubesat.xacro"/>
+  <node name="spawn_cubesat_urdf" pkg="gazebo_ros" type="spawn_model" args="-param cubesat_description -urdf -model cubesat -x 2.65 -y 0 -z 1 -R 0.5 -P 0.0 -Y 0.0"/>
+  <!-- <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="paused" value="true"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include> -->
+</launch>

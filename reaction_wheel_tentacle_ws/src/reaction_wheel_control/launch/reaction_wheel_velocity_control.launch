@@ -1,0 +1,42 @@
+<launch>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find reaction_wheel_control)/config/reaction_wheel_control.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+	output="screen" ns="/reaction_wheel" args="joint_state_controller
+					  reaction_wheel_front_velocity_controller
+					  reaction_wheel_back_velocity_controller
+            reaction_wheel_right_velocity_controller
+            reaction_wheel_left_velocity_controller
+            
+            tentacle_right_link_1_joint_position_controller
+            tentacle_right_link_2_joint_position_controller
+            tentacle_right_link_3_joint_position_controller
+            tentacle_right_link_4_joint_position_controller
+
+            tentacle_left_link_1_joint_position_controller
+            tentacle_left_link_2_joint_position_controller
+            tentacle_left_link_3_joint_position_controller
+            tentacle_left_link_4_joint_position_controller
+            
+            tentacle_up_link_1_joint_position_controller
+            tentacle_up_link_2_joint_position_controller
+            tentacle_up_link_3_joint_position_controller
+            tentacle_up_link_4_joint_position_controller
+
+            tentacle_down_link_1_joint_position_controller
+            tentacle_down_link_2_joint_position_controller
+            tentacle_down_link_3_joint_position_controller
+            tentacle_down_link_4_joint_position_controller
+
+            "/>
+
+  <!-- convert joint states to TF transforms for rviz, etc -->
+  <node name="reaction_wheel_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+	respawn="false" output="screen">
+    <remap from="/joint_states" to="/reaction_wheel_state/joint_states" />
+  </node>
+
+</launch>

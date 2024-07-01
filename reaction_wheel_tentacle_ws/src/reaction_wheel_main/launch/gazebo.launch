@@ -1,0 +1,22 @@
+<launch>
+  <param name="robot_description" command="$(find xacro)/xacro $(find reaction_wheel_main)/urdf/reaction_wheel.xacro"/>
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model reaction_wheel -x 0 -y 0 -z 1"/>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find reaction_wheel_main)/worlds/no_gravity.world"/>
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+  <include file="$(find reaction_wheel_control)/launch/reaction_wheel_velocity_control.launch"/>
+  <include file="$(find cubesat_description)/launch/gazebo.launch"/>
+
+  <node name="chaser_transition_position_throttle" pkg="topic_tools" type="throttle" args="messages /reaction_wheel_plugin/transition_position 50.0" />
+  <node name="chaser_transition_velocity_throttle" pkg="topic_tools" type="throttle" args="messages /reaction_wheel_plugin/transition_velocity 50.0" />
+  <node name="chaser_transition_acceleration_throttle" pkg="topic_tools" type="throttle" args="messages /reaction_wheel_plugin/transition_acceleration 50.0" />
+  <node name="chaser_quaternion_throttle" pkg="topic_tools" type="throttle" args="messages /reaction_wheel_plugin/quaternion 50.0" />
+  <node name="chaser_rotation_velocity_throttle" pkg="topic_tools" type="throttle" args="messages /reaction_wheel_plugin/rotation_velocity 50.0" />
+
+</launch>

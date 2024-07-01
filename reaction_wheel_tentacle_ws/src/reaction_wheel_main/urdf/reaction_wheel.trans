@@ -1,0 +1,217 @@
+<?xml version="1.0" ?>
+<robot name="reaction_wheel" xmlns:xacro="http://www.ros.org/wiki/xacro" >
+<!--
+<transmission name="{joint}_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="{joint}">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="{joint}_actr">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+-->
+<transmission name="reaction_wheel_front_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="reaction_wheel_front_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="reaction_wheel_front_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="reaction_wheel_right_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="reaction_wheel_right_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="reaction_wheel_right_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="reaction_wheel_left_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="reaction_wheel_left_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="reaction_wheel_left_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="reaction_wheel_back_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="reaction_wheel_back_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="reaction_wheel_back_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="tentacle_right_link_1_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="tentacle_right_link_1_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="tentacle_right_link_1_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="tentacle_left_link_1_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="tentacle_left_link_1_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="tentacle_left_link_1_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="tentacle_right_link_2_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="tentacle_right_link_2_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="tentacle_right_link_2_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="tentacle_left_link_2_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="tentacle_left_link_2_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="tentacle_left_link_2_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="tentacle_right_link_3_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="tentacle_right_link_3_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="tentacle_right_link_3_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="tentacle_left_link_3_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="tentacle_left_link_3_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="tentacle_left_link_3_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="tentacle_right_link_4_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="tentacle_right_link_4_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="tentacle_right_link_4_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="tentacle_left_link_4_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="tentacle_left_link_4_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="tentacle_left_link_4_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="tentacle_up_link_1_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="tentacle_up_link_1_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="tentacle_up_link_1_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="tentacle_up_link_2_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="tentacle_up_link_2_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="tentacle_up_link_2_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="tentacle_up_link_3_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="tentacle_up_link_3_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="tentacle_up_link_3_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="tentacle_up_link_4_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="tentacle_up_link_4_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="tentacle_up_link_4_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="tentacle_down_link_1_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="tentacle_down_link_1_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="tentacle_down_link_1_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="tentacle_down_link_2_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="tentacle_down_link_2_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="tentacle_down_link_2_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="tentacle_down_link_3_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="tentacle_down_link_3_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="tentacle_down_link_3_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="tentacle_down_link_4_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="tentacle_down_link_4_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="tentacle_down_link_4_joint_actr">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+</robot>

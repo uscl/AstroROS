@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<robot name="reaction_wheel" xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+<material name="silver">
+  <color rgba="0.500 0.500 0.500 1.000"/>
+</material>
+
+<material name="white">
+  <color rgba="1.0 1.0 1.0 1.000"/>
+</material>
+
+<material name="black">
+  <color rgba="0.0 0.0 0.0 1.000"/>
+</material>
+
+<material name="red">
+  <color rgba="1.0 0.0 0.0 1.000"/>
+</material>
+
+<material name="green">
+  <color rgba="0.0 1.0 0.0 1.000"/>
+</material>
+
+<material name="blue">
+  <color rgba="0.0 0.0 1.0 1.000"/>
+</material>
+
+<material name="yellow">
+  <color rgba="1.0 0.831 0.0 1.000"/>
+</material>
+
+<material name="brown">
+  <color rgba="0.588 0.294 0.0 1.000"/>
+</material>
+
+</robot>

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>reaction_wheel_plugin</name>
+  <version>0.0.1</version>
+  <description>virtual satellite plugin package</description>
+
+  <maintainer email="michael1015999@gmail.com">Minsik Oh</maintainer>
+
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  
+  <depend>std_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>geometry_msgs</depend>
+  
+  <build_depend>gazebo_ros</build_depend>
+  <build_depend>aruco_ros</build_depend>
+  <build_depend>gazebo_plugins</build_depend>
+  <!--++++++++++++++++++++++++++++++++++++++-->
+  <build_depend>gazebo_dev</build_depend>
+  <!--++++++++++++++++++++++++++++++++++++++-->
+  <build_export_depend>gazebo_ros</build_export_depend>
+  <build_export_depend>gazebo_plugins</build_export_depend>
+  
+  <!--++++++++++++++++++++++++++++++++++++++-->
+  <exec_depend>gazebo_dev</exec_depend>
+  <!--++++++++++++++++++++++++++++++++++++++-->
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>aruco_ros</exec_depend>
+  <exec_depend>gazebo_plugins</exec_depend>
+  <export>
+    <gazebo_ros plugin_path="${prefix}/lib" gazebo_media_path="${prefix}" gazebo_model_path="${prefix}" />
+  </export>
+</package>

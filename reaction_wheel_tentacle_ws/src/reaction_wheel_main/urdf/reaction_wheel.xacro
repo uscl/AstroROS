@@ -1,0 +1,1452 @@
+<?xml version="1.0" ?>
+<robot name="reaction_wheel" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find reaction_wheel_main)/urdf/materials.xacro" />
+<xacro:include filename="$(find reaction_wheel_main)/urdf/reaction_wheel.trans" />
+<xacro:include filename="$(find reaction_wheel_main)/urdf/reaction_wheel.gazebo" />
+
+<xacro:property name="PI"                value="3.1415926535897931"/>
+<xacro:property name="pi"                value="3.1415926535897931"/>
+
+<!-- total base mass = 30 kg -->
+<xacro:property name="base_mass"         value="18.4"    />
+<xacro:property name="wheel_mass"        value="1"       /> <!-- X 4 -->
+<xacro:property name="mount_mass"        value="1"       />
+<xacro:property name="window_mass"       value="0.25"    /> <!-- X 4 -->
+<xacro:property name="thruster_mass"     value="0.05"    /> <!-- X 12 -->
+<xacro:property name="dummy_mass"        value="5"       />
+<xacro:property name="base_camera_mass"        value="0.001"       /> <!--unit : [kg]-->
+
+<!-- arm mass = 1kg -->
+<xacro:property name="link_1_mass"       value="3"     />
+<xacro:property name="link_2_mass"       value="2.5"     />
+<xacro:property name="link_3_mass"       value="2"     />
+<xacro:property name="link_4_mass"       value="1"    />
+<xacro:property name="link_mount_mass"   value="1"    />
+
+<xacro:property name="base_length"       value="1"       />
+<xacro:property name="base_thickness"    value="0.1"     />
+
+<xacro:property name="link_mount_length" value="0.225"   />
+<xacro:property name="link_mount_height" value="0.3"     />
+<xacro:property name="link_mount_width"  value="0.15"    />
+<xacro:property name="link_mount_circle" value="0.075"   />
+<xacro:property name="link_mount_offset" value="0.0385"  />
+
+<xacro:property name="link_1_height"     value="0.1"     />
+<xacro:property name="link_1_length"     value="1.35"    />
+<xacro:property name="link_1_width"      value="0.15"    />
+<xacro:property name="link_1_circle"     value="0.075"   />
+
+<xacro:property name="link_2_height"     value="0.1"     />
+<xacro:property name="link_2_length"     value="0.927654"/>
+<xacro:property name="link_2_width"      value="0.15"    />
+<xacro:property name="link_2_circle"     value="0.052654"/>
+
+<xacro:property name="link_3_height"     value="0.1"     />
+<xacro:property name="link_3_length"     value="0.688548"/>
+<xacro:property name="link_3_width"      value="0.105308"/>
+<xacro:property name="link_3_circle"     value="0.035894" />
+
+<xacro:property name="link_4_height"     value="0.1"     />
+<xacro:property name="link_4_length"     value="0.460616"/>
+<xacro:property name="link_4_width"      value="0.071789"/>
+<xacro:property name="link_4_circle"     value="0.024721" />
+
+<xacro:property name="mount_height"      value="0.35"    />
+<xacro:property name="mount_width"       value="0.7"     />
+<xacro:property name="mount_slide"       value="0.606218"/>
+
+<xacro:property name="dummy_length"      value="0.5"     />
+<xacro:property name="dummy_depth"       value="0.2"     />
+
+<xacro:property name="wheel_radius"      value="0.2"     />
+<xacro:property name="wheel_length"      value="0.1"     />
+
+<xacro:property name="thruster_radius"   value="0.05"    />
+<xacro:property name="thruster_length"   value="0.06"    />
+
+<xacro:property name="window_height"     value="0.8"     />
+<xacro:property name="window_width"      value="0.8"     />
+<xacro:property name="window_depth"      value="0.1"     />
+
+<xacro:property name="base_camera_length"      value="0.005"     /> <!--unit : [m]-->
+<!--==========================-->
+<link name="dummy_base_link">
+</link>
+<joint name="dummy_to_base_fixed_joint" type="fixed">
+  <parent link="dummy_base_link"/>
+  <child link="base_link"/>
+  <origin xyz="0 0 0" rpy="0 0 0"/>
+</joint>
+<!--==========================-->
+<link name="base_link">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/> <!--axis does not move. Visual and Collision part move.-->
+    <mass value="${base_mass}"/>
+    <inertia ixx="${1/6*base_mass*base_length*base_length}" 
+             iyy="${1/6*base_mass*base_length*base_length}" 
+             izz="${1/6*base_mass*base_length*base_length}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="white"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="thruster_1">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${thruster_mass}"/>
+    <inertia ixx="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             iyy="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             izz="${1/2*thruster_mass*thruster_radius*thruster_radius}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="yellow"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="thruster_2">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${thruster_mass}"/>
+    <inertia ixx="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             iyy="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             izz="${1/2*thruster_mass*thruster_radius*thruster_radius}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="yellow"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+<link name="thruster_3">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${thruster_mass}"/>
+    <inertia ixx="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             iyy="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             izz="${1/2*thruster_mass*thruster_radius*thruster_radius}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="yellow"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+<link name="thruster_7">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${thruster_mass}"/>
+    <inertia ixx="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             iyy="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             izz="${1/2*thruster_mass*thruster_radius*thruster_radius}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="yellow"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+<link name="thruster_8">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${thruster_mass}"/>
+    <inertia ixx="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             iyy="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             izz="${1/2*thruster_mass*thruster_radius*thruster_radius}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="yellow"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+<link name="thruster_9">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${thruster_mass}"/>
+    <inertia ixx="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             iyy="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             izz="${1/2*thruster_mass*thruster_radius*thruster_radius}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="yellow"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="thruster_4">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${thruster_mass}"/>
+    <inertia ixx="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             iyy="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             izz="${1/2*thruster_mass*thruster_radius*thruster_radius}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="yellow"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+<link name="thruster_5">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${thruster_mass}"/>
+    <inertia ixx="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             iyy="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             izz="${1/2*thruster_mass*thruster_radius*thruster_radius}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="yellow"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+<link name="thruster_6">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${thruster_mass}"/>
+    <inertia ixx="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             iyy="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             izz="${1/2*thruster_mass*thruster_radius*thruster_radius}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="yellow"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="thruster_10">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${thruster_mass}"/>
+    <inertia ixx="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             iyy="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             izz="${1/2*thruster_mass*thruster_radius*thruster_radius}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="yellow"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+<link name="thruster_11">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${thruster_mass}"/>
+    <inertia ixx="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             iyy="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             izz="${1/2*thruster_mass*thruster_radius*thruster_radius}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="yellow"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+<link name="thruster_12">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${thruster_mass}"/>
+    <inertia ixx="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             iyy="${1/12*thruster_mass*(3*thruster_radius*thruster_radius+thruster_length*thruster_length)}" 
+             izz="${1/2*thruster_mass*thruster_radius*thruster_radius}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="yellow"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/thruster.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="front_window">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${window_mass}"/>
+    <inertia ixx="${1/3*window_mass*window_height*window_width}" 
+             iyy="${1/3*window_mass*window_height*window_depth}" 
+             izz="${1/3*window_mass*window_width*window_depth}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <!--<visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/window.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>-->
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/window.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+<link name="right_window">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${window_mass}"/>
+    <inertia ixx="${1/3*window_mass*window_height*window_width}" 
+             iyy="${1/3*window_mass*window_height*window_depth}" 
+             izz="${1/3*window_mass*window_width*window_depth}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <!--<visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/window.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>-->
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/window.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+<link name="left_window">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${window_mass}"/>
+    <inertia ixx="${1/3*window_mass*window_height*window_width}" 
+             iyy="${1/3*window_mass*window_height*window_depth}" 
+             izz="${1/3*window_mass*window_width*window_depth}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <!--<visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/window.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>-->
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/window.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+<link name="back_window">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${window_mass}"/>
+    <inertia ixx="${1/3*window_mass*window_height*window_width}" 
+             iyy="${1/3*window_mass*window_height*window_depth}" 
+             izz="${1/3*window_mass*window_width*window_depth}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <!--<visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/window.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>-->
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/window.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<!-- ======================================== -->
+<link name="base_camera">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/> <!--axis does not move. Visual and Collision part move.-->
+    <mass value="${base_camera_mass}"/>
+    <inertia ixx="${1/6*base_camera_mass*base_camera_length*base_camera_length}" 
+             iyy="${1/6*base_camera_mass*base_camera_length*base_camera_length}" 
+             izz="${1/6*base_camera_mass*base_camera_length*base_camera_length}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/base_camera.stl" scale="0.01 0.01 0.01"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <!-- <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/base_camera.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision> -->
+</link>
+<!-- ======================================== -->
+<link name="dummy">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${dummy_mass}"/>
+    <inertia ixx="${1/3*dummy_mass*dummy_length*dummy_length}" 
+             iyy="${1/3*dummy_mass*dummy_length*dummy_depth}" 
+             izz="${1/3*dummy_mass*dummy_length*dummy_depth}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/dummy.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="brown"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/dummy.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="reaction_wheel_mount">
+  <inertial>
+    <origin xyz="0 0 -0.0875" rpy="0 0 0"/>
+    <mass value="${mount_mass}"/>
+    <inertia ixx="${1/20*mount_mass*(2*mount_width*mount_width)}" 
+             iyy="${1/20*mount_mass*(2*mount_width*mount_width)}" 
+             izz="${1/20*mount_mass*(2*mount_width*mount_width)}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/reaction_wheel_mount.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="brown"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/reaction_wheel_mount.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="reaction_wheel_front">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${wheel_mass}"/>
+    <inertia ixx="${1/12*wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)}"
+             iyy="${1/12*wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)}" 
+             izz="${1/2*wheel_mass*wheel_radius*wheel_radius}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+    
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/reaction_wheel.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="red"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/reaction_wheel.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="reaction_wheel_right">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${wheel_mass}"/>
+    <inertia ixx="${1/12*wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)}"
+             iyy="${1/12*wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)}"
+             izz="${1/2*wheel_mass*wheel_radius*wheel_radius}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+    
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/reaction_wheel.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="green"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/reaction_wheel.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="reaction_wheel_left">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${wheel_mass}"/>
+    <inertia ixx="${1/12*wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)}" 
+             iyy="${1/12*wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)}"
+             izz="${1/2*wheel_mass*wheel_radius*wheel_radius}" 
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+    
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/reaction_wheel.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="blue"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/reaction_wheel.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="reaction_wheel_back">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${wheel_mass}"/>
+    <inertia ixx="${1/12*wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)}"
+             iyy="${1/12*wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)}" 
+             izz="${1/2*wheel_mass*wheel_radius*wheel_radius}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+    
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/reaction_wheel.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="yellow"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/reaction_wheel.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+
+</link>
+
+<!-- ================================================================================================ -->
+<!-- ================================================================================================ -->
+<!-- ================================================================================================ -->
+
+<link name="tentacle_right_mount">
+  <inertial>
+    <origin xyz="0.102783 0 0" rpy="0 0 0"/>
+    <mass value="${link_mount_mass}"/>
+    <inertia ixx="${1/6*link_mount_mass*link_mount_height*link_mount_width}" 
+             iyy="${1/6*link_mount_mass*link_mount_height*link_mount_length}"
+             izz="${1/6*link_mount_mass*link_mount_length*link_mount_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/base_joint_mount.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/base_joint_mount.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_left_mount">
+  <inertial>
+    <origin xyz="0.102783 0 0" rpy="0 0 0"/>
+    <mass value="${link_mount_mass}"/>
+    <inertia ixx="${1/6*link_mount_mass*link_mount_height*link_mount_width}" 
+             iyy="${1/6*link_mount_mass*link_mount_height*link_mount_length}"
+             izz="${1/6*link_mount_mass*link_mount_length*link_mount_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/base_joint_mount.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/base_joint_mount.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_up_mount">
+  <inertial>
+    <origin xyz="0.102783 0 0" rpy="0 0 0"/>
+    <mass value="${link_mount_mass}"/>
+    <inertia ixx="${1/6*link_mount_mass*link_mount_height*link_mount_width}" 
+             iyy="${1/6*link_mount_mass*link_mount_height*link_mount_length}"
+             izz="${1/6*link_mount_mass*link_mount_length*link_mount_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/base_joint_mount.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/base_joint_mount.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_down_mount">
+  <inertial>
+    <origin xyz="0.102783 0 0" rpy="0 0 0"/>
+    <mass value="${link_mount_mass}"/>
+    <inertia ixx="${1/6*link_mount_mass*link_mount_height*link_mount_width}" 
+             iyy="${1/6*link_mount_mass*link_mount_height*link_mount_length}"
+             izz="${1/6*link_mount_mass*link_mount_length*link_mount_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/base_joint_mount.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/base_joint_mount.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_right_link_1">
+  <inertial>
+    <origin xyz="0.6 0 0" rpy="0 0 0"/>
+    <mass value="${link_1_mass}"/>
+    <inertia ixx="${1/6*link_1_mass*link_1_height*link_1_width}"
+             iyy="${1/6*link_1_mass*link_1_height*link_1_length}" 
+             izz="${1/6*link_1_mass*link_1_length*link_1_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_left_link_1">
+  <inertial>
+    <origin xyz="0.6 0 0" rpy="0 0 0"/>
+    <mass value="${link_1_mass}"/>
+    <inertia ixx="${1/6*link_1_mass*link_1_height*link_1_width}"
+             iyy="${1/6*link_1_mass*link_1_height*link_1_length}" 
+             izz="${1/6*link_1_mass*link_1_length*link_1_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_right_link_2">
+  <inertial>
+    <origin xyz="0.262191 0 0" rpy="0 0 0"/>
+    <mass value="${link_2_mass}"/>
+    <inertia ixx="${1/6*link_2_mass*link_2_height*link_2_width}"
+             iyy="${1/6*link_2_mass*link_2_height*link_2_length}" 
+             izz="${1/6*link_2_mass*link_2_length*link_2_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_2.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_2.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_left_link_2">
+  <inertial>
+    <origin xyz="0.262191 0 0" rpy="0 0 0"/>
+    <mass value="${link_2_mass}"/>
+    <inertia ixx="${1/6*link_2_mass*link_2_height*link_2_width}"
+             iyy="${1/6*link_2_mass*link_2_height*link_2_length}" 
+             izz="${1/6*link_2_mass*link_2_length*link_2_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_2.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_2.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_left_link_3">
+  <inertial>
+    <origin xyz="0.270232 0 0" rpy="0 0 0"/>
+    <mass value="${link_3_mass}"/>
+    <inertia ixx="${1/6*link_3_mass*link_3_height*link_3_width}"
+             iyy="${1/6*link_3_mass*link_3_height*link_3_length}" 
+             izz="${1/6*link_3_mass*link_3_length*link_3_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_3.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_3.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_right_link_3">
+  <inertial>
+    <origin xyz="0.270232 0 0" rpy="0 0 0"/>
+    <mass value="${link_3_mass}"/>
+    <inertia ixx="${1/6*link_3_mass*link_3_height*link_3_width}"
+             iyy="${1/6*link_3_mass*link_3_height*link_3_length}" 
+             izz="${1/6*link_3_mass*link_3_length*link_3_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_3.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_3.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_right_link_4">
+  <inertial>
+    <origin xyz="0.180482 0 0" rpy="0 0 0"/>
+    <mass value="${link_4_mass}"/>
+    <inertia ixx="${1/6*link_4_mass*link_4_height*link_4_width}"
+             iyy="${1/6*link_4_mass*link_4_height*link_4_length}" 
+             izz="${1/6*link_4_mass*link_4_length*link_4_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+    
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_4.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_4.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+<link name="tentacle_left_link_4">
+  <inertial>
+    <origin xyz="0.180482 0 0" rpy="0 0 0"/>
+    <mass value="${link_4_mass}"/>
+    <inertia ixx="${1/6*link_4_mass*link_4_height*link_4_width}"
+             iyy="${1/6*link_4_mass*link_4_height*link_4_length}" 
+             izz="${1/6*link_4_mass*link_4_length*link_4_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_4.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_4.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_up_link_1">
+  <inertial>
+    <origin xyz="0.6 0 0" rpy="0 0 0"/>
+    <mass value="${link_1_mass}"/>
+    <inertia ixx="${1/6*link_1_mass*link_1_height*link_1_width}"
+             iyy="${1/6*link_1_mass*link_1_height*link_1_length}" 
+             izz="${1/6*link_1_mass*link_1_length*link_1_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+    
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_up_link_2">
+  <inertial>
+    <origin xyz="0.262191 0 0" rpy="0 0 0"/>
+    <mass value="${link_2_mass}"/>
+    <inertia ixx="${1/6*link_2_mass*link_2_height*link_2_width}"
+             iyy="${1/6*link_2_mass*link_2_height*link_2_length}" 
+             izz="${1/6*link_2_mass*link_2_length*link_2_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+    
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_2.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_2.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_up_link_3">
+  <inertial>
+    <origin xyz="0.270232 0 0" rpy="0 0 0"/>
+    <mass value="${link_3_mass}"/>
+    <inertia ixx="${1/6*link_3_mass*link_3_height*link_3_width}"
+             iyy="${1/6*link_3_mass*link_3_height*link_3_length}" 
+             izz="${1/6*link_3_mass*link_3_length*link_3_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+    
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_3.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_3.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_up_link_4">
+  <inertial>
+    <origin xyz="0.180482 0 0" rpy="0 0 0"/>
+    <mass value="${link_4_mass}"/>
+    <inertia ixx="${1/6*link_4_mass*link_4_height*link_4_width}"
+             iyy="${1/6*link_4_mass*link_4_height*link_4_length}" 
+             izz="${1/6*link_4_mass*link_4_length*link_4_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+    
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_4.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_4.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_down_link_1">
+  <inertial>
+    <origin xyz="0.6 0 0" rpy="0 0 0"/>
+    <mass value="${link_1_mass}"/>
+    <inertia ixx="${1/6*link_1_mass*link_1_height*link_1_width}"
+             iyy="${1/6*link_1_mass*link_1_height*link_1_length}" 
+             izz="${1/6*link_1_mass*link_1_length*link_1_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+    
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_down_link_2">
+  <inertial>
+    <origin xyz="0.262191 0 0" rpy="0 0 0"/>
+    <mass value="${link_2_mass}"/>
+    <inertia ixx="${1/6*link_2_mass*link_2_height*link_2_width}"
+             iyy="${1/6*link_2_mass*link_2_height*link_2_length}" 
+             izz="${1/6*link_2_mass*link_2_length*link_2_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+    
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_2.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_2.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_down_link_3">
+  <inertial>
+    <origin xyz="0.270232 0 0" rpy="0 0 0"/>
+    <mass value="${link_3_mass}"/>
+    <inertia ixx="${1/6*link_3_mass*link_3_height*link_3_width}"
+             iyy="${1/6*link_3_mass*link_3_height*link_3_length}" 
+             izz="${1/6*link_3_mass*link_3_length*link_3_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+    
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_3.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_3.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="tentacle_down_link_4">
+  <inertial>
+    <origin xyz="0.180482 0 0" rpy="0 0 0"/>
+    <mass value="${link_4_mass}"/>
+    <inertia ixx="${1/6*link_4_mass*link_4_height*link_4_width}"
+             iyy="${1/6*link_4_mass*link_4_height*link_4_length}" 
+             izz="${1/6*link_4_mass*link_4_length*link_4_width}"
+             ixy="0.0" iyz="0.0" ixz="0.0"/>
+    
+  </inertial>
+  <visual>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_4.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://reaction_wheel_main/meshes/link_no_4.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+
+<!-- ================================================================================================ -->
+
+<!--
+<joint name="joint_z" type="continuous">
+  <parent link="cube"/>
+  <child link="wheel_z"/>
+  <origin xyz="0 0 ${cube_length/2-wheel_length/2+offset}" rpy="0 0 0"/>
+  <axis xyz="0 0 1"/>
+  <dynamics damping="0.7" friction = "0.01"/>
+  <limit lower="-3.0" upper="3.0" effort="1000.0" velocity="0.5"/>
+
+</joint>
+-->
+
+<joint name="mount_joint" type="fixed">
+  <parent link="base_link"/>
+  <child link="reaction_wheel_mount"/>
+  <origin xyz="0 0 -${base_length/2 - base_thickness - mount_height/2}" rpy="0 0 0"/>
+</joint>
+
+<joint name="dummy_joint" type="fixed">
+  <parent link="base_link"/>
+  <child link="dummy"/>
+  <origin xyz="0 0 ${base_length/2 - base_thickness - dummy_depth/2}" rpy="0 0 0"/>
+</joint>
+<!-- ================================================================================================ -->
+<joint name="tentacle_right_mount_joint" type="fixed">
+  <parent link="base_link"/>
+  <child link="tentacle_right_mount"/>
+  <origin xyz="${base_length/2 - link_mount_length/2 + link_mount_offset} -${base_length/2} 0" rpy="0 0 -${pi/2}"/>
+</joint>
+
+<joint name="tentacle_left_mount_joint" type="fixed">
+  <parent link="base_link"/>
+  <child link="tentacle_left_mount"/>
+  <origin xyz="${base_length/2 - link_mount_length/2 + link_mount_offset} ${base_length/2} 0" rpy="0 0 ${pi/2}"  />
+</joint>
+
+<joint name="tentacle_up_mount_joint" type="fixed">
+  <parent link="base_link"/>
+  <child link="tentacle_up_mount"/>
+  <origin xyz="${base_length/2 - link_mount_length/2 + link_mount_offset} 0 ${base_length/2}" rpy="${pi/2} -${pi/2} 0"  />
+</joint>
+
+<joint name="tentacle_down_mount_joint" type="fixed">
+  <parent link="base_link"/>
+  <child link="tentacle_down_mount"/>
+  <origin xyz="${base_length/2 - link_mount_length/2 + link_mount_offset} 0 -${base_length/2}" rpy="${pi/2} ${pi/2} 0"  />
+</joint>
+
+<!-- ================================================================================================ -->
+<joint name="front_window_joint" type="fixed">
+  <parent link="base_link"/>
+  <child link="front_window"/>
+  <origin xyz="${base_length/2 -base_thickness + window_depth/2} 0 0" rpy="0 ${pi/2} 0"/>
+</joint>
+<joint name="right_window_joint" type="fixed">
+  <parent link="base_link"/>
+  <child link="right_window"/>
+  <origin xyz="0 -${base_length/2 -base_thickness + window_depth/2} 0" rpy="${pi/2} ${pi/2} 0"/>
+</joint>
+<joint name="left_window_joint" type="fixed">
+  <parent link="base_link"/>
+  <child link="left_window"/>
+  <origin xyz="0 ${base_length/2 -base_thickness + window_depth/2} 0" rpy="-${pi/2} ${pi/2} 0"/>
+</joint>
+<joint name="back_window_joint" type="fixed">
+  <parent link="base_link"/>
+  <child link="back_window"/>
+  <origin xyz="-${base_length/2 -base_thickness + window_depth/2} 0 0" rpy="0 -${pi/2} 0"/>
+</joint>
+
+<joint name="base_camera_joint" type="fixed">
+  <parent link="front_window"/>
+  <child link="base_camera"/>
+  <origin xyz="0 0 0" rpy="0 -${pi/2} 0"/>
+</joint>
+
+<joint name="reaction_wheel_front_joint" type="continuous">
+  <parent link="reaction_wheel_mount"/>
+  <child link="reaction_wheel_front"/>
+  <origin xyz="${mount_width/4} 0.0 0.0 " rpy="0 ${pi/4} 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+
+<joint name="reaction_wheel_right_joint" type="continuous">
+  <parent link="reaction_wheel_mount"/>
+  <child link="reaction_wheel_right"/>
+  <origin xyz="0.0 -${mount_width/4} 0.0 " rpy="${pi/4} 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+
+<joint name="reaction_wheel_left_joint" type="continuous">
+  <parent link="reaction_wheel_mount"/>
+  <child link="reaction_wheel_left"/>
+  <origin xyz="0.0 ${mount_width/4} 0.0 " rpy="-${pi/4} 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+
+<joint name="reaction_wheel_back_joint" type="continuous">
+  <parent link="reaction_wheel_mount"/>
+  <child link="reaction_wheel_back"/>
+  <origin xyz="-${mount_width/4} 0.0 0.0 " rpy="0 -${pi/4} 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+
+<joint name="thruster_1_joint" type="continuous">
+  <parent link="base_link"/>
+  <child link="thruster_1"/>
+  <origin xyz="${base_length/2 - base_thickness/2 + thruster_length} ${base_length/2 - base_thickness/2} ${base_length/2 - base_thickness/2}" rpy="0 ${pi/2} 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+
+<joint name="thruster_2_joint" type="continuous">
+  <parent link="base_link"/>
+  <child link="thruster_2"/>
+  <origin xyz="${base_length/2 - base_thickness/2} ${base_length/2 - base_thickness/2 + thruster_length} ${base_length/2 - base_thickness/2}" rpy="-${pi/2} 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+
+<joint name="thruster_3_joint" type="continuous">
+  <parent link="base_link"/>
+  <child link="thruster_3"/>
+  <origin xyz="${base_length/2 - base_thickness/2} ${base_length/2 - base_thickness/2} ${base_length/2 - base_thickness/2 + thruster_length}" rpy="0 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+
+<joint name="thruster_7_joint" type="continuous">
+  <parent link="base_link"/>
+  <child link="thruster_7"/>
+  <origin xyz="-${base_length/2 - base_thickness/2 + thruster_length} -${base_length/2 - base_thickness/2} ${base_length/2 - base_thickness/2}" rpy="0 -${pi/2} 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+
+<joint name="thruster_8_joint" type="continuous">
+  <parent link="base_link"/>
+  <child link="thruster_8"/>
+  <origin xyz="-${base_length/2 - base_thickness/2} -${base_length/2 - base_thickness/2 + thruster_length} ${base_length/2 - base_thickness/2}" rpy="${pi/2} 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+
+<joint name="thruster_9_joint" type="continuous">
+  <parent link="base_link"/>
+  <child link="thruster_9"/>
+  <origin xyz="-${base_length/2 - base_thickness/2} -${base_length/2 - base_thickness/2} ${base_length/2 - base_thickness/2 + thruster_length}" rpy="0 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+
+<joint name="thruster_4_joint" type="continuous">
+  <parent link="base_link"/>
+  <child link="thruster_4"/>
+  <origin xyz="-${base_length/2 - base_thickness/2 + thruster_length} ${base_length/2 - base_thickness/2} -${base_length/2 - base_thickness/2}" rpy="0 -${pi/2} 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+
+<joint name="thruster_5_joint" type="continuous">
+  <parent link="base_link"/>
+  <child link="thruster_5"/>
+  <origin xyz="-${base_length/2 - base_thickness/2} ${base_length/2 - base_thickness/2 + thruster_length} -${base_length/2 - base_thickness/2}" rpy="-${pi/2} 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+
+<joint name="thruster_6_joint" type="continuous">
+  <parent link="base_link"/>
+  <child link="thruster_6"/>
+  <origin xyz="-${base_length/2 - base_thickness/2} ${base_length/2 - base_thickness/2} -${base_length/2 - base_thickness/2 + thruster_length}" rpy="${pi} 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+
+<joint name="thruster_10_joint" type="continuous">
+  <parent link="base_link"/>
+  <child link="thruster_10"/>
+  <origin xyz="${base_length/2 - base_thickness/2 + thruster_length} -${base_length/2 - base_thickness/2} -${base_length/2 - base_thickness/2}" rpy="0 ${pi/2} 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+
+<joint name="thruster_11_joint" type="continuous">
+  <parent link="base_link"/>
+  <child link="thruster_11"/>
+  <origin xyz="${base_length/2 - base_thickness/2} -${base_length/2 - base_thickness/2 + thruster_length} -${base_length/2 - base_thickness/2}" rpy="${pi/2} 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+
+<joint name="thruster_12_joint" type="continuous">
+  <parent link="base_link"/>
+  <child link="thruster_12"/>
+  <origin xyz="${base_length/2 - base_thickness/2} -${base_length/2 - base_thickness/2} -${base_length/2 - base_thickness/2 + thruster_length}" rpy="-${pi} 0 0"/>
+  <axis xyz="0 0 1"/>
+
+</joint>
+<!-- ================================================================================================ -->
+<joint name="tentacle_right_link_1_joint" type="continuous">
+  <parent link="tentacle_right_mount"/>
+  <child link="tentacle_right_link_1"/>
+  <origin xyz="${link_mount_length-link_mount_circle} 0 0" rpy="0 0 ${pi/2}"/>
+  <axis xyz="0 0 1"/>
+  <!-- <physics>
+    <provide_feedback>true</provide_feedback>
+  </physics>
+  <sensor name="force_torque" type="force_torque">
+    <update_rate>1.0</update_rate>
+  </sensor> -->
+</joint>
+
+<joint name="tentacle_left_link_1_joint" type="continuous">
+  <parent link="tentacle_left_mount"/>
+  <child link="tentacle_left_link_1"/>
+  <origin xyz="${link_mount_length-link_mount_circle} 0 0" rpy="0 0 -${pi/2}"/>
+  <axis xyz="0 0 1"/>
+</joint>
+<!-- ================================================================================================ -->
+<joint name="tentacle_right_link_2_joint" type="continuous">
+  <parent link="tentacle_right_link_1"/>
+  <child link="tentacle_right_link_2"/>
+  <origin xyz="${link_1_length-link_1_circle*2} 0 0" rpy="0 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+<joint name="tentacle_left_link_2_joint" type="continuous">
+  <parent link="tentacle_left_link_1"/>
+  <child link="tentacle_left_link_2"/>
+  <origin xyz="${link_1_length-link_1_circle*2} 0 0" rpy="0 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+<!-- ================================================================================================ -->
+<joint name="tentacle_right_link_3_joint" type="continuous">
+  <parent link="tentacle_right_link_2"/>
+  <child link="tentacle_right_link_3"/>
+  <origin xyz="${link_2_length-link_2_circle*2} 0 0" rpy="0 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+<joint name="tentacle_left_link_3_joint" type="continuous">
+  <parent link="tentacle_left_link_2"/>
+  <child link="tentacle_left_link_3"/>
+  <origin xyz="${link_2_length-link_2_circle*2} 0 0" rpy="0 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+<!-- ================================================================================================ -->
+<joint name="tentacle_right_link_4_joint" type="continuous">
+  <parent link="tentacle_right_link_3"/>
+  <child link="tentacle_right_link_4"/>
+  <origin xyz="${link_3_length-link_3_circle*2} 0 0" rpy="0 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+<joint name="tentacle_left_link_4_joint" type="continuous">
+  <parent link="tentacle_left_link_3"/>
+  <child link="tentacle_left_link_4"/>
+  <origin xyz="${link_3_length-link_3_circle*2} 0 0" rpy="0 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+<!-- ================================================================================================ -->
+<joint name="tentacle_up_link_1_joint" type="continuous">
+  <parent link="tentacle_up_mount"/>
+  <child link="tentacle_up_link_1"/>
+  <origin xyz="${link_mount_length-link_mount_circle} 0 0" rpy="${pi} 0 -${pi/2}"/>
+  <axis xyz="0 0 1"/>
+</joint>
+<joint name="tentacle_down_link_1_joint" type="continuous">
+  <parent link="tentacle_down_mount"/>
+  <child link="tentacle_down_link_1"/>
+  <origin xyz="${link_mount_length-link_mount_circle} 0 0" rpy="-${pi} 0 ${pi/2}"/>
+  <axis xyz="0 0 1"/>
+</joint>
+<!-- ================================================================================================ -->
+<joint name="tentacle_up_link_2_joint" type="continuous">
+  <parent link="tentacle_up_link_1"/>
+  <child link="tentacle_up_link_2"/>
+  <origin xyz="${link_1_length-link_1_circle*2} 0 0" rpy="0 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+<joint name="tentacle_down_link_2_joint" type="continuous">
+  <parent link="tentacle_down_link_1"/>
+  <child link="tentacle_down_link_2"/>
+  <origin xyz="${link_1_length-link_1_circle*2} 0 0" rpy="0 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+<!-- ================================================================================================ -->
+<joint name="tentacle_up_link_3_joint" type="continuous">
+  <parent link="tentacle_up_link_2"/>
+  <child link="tentacle_up_link_3"/>
+  <origin xyz="${link_2_length-link_2_circle*2} 0 0" rpy="0 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+<joint name="tentacle_down_link_3_joint" type="continuous">
+  <parent link="tentacle_down_link_2"/>
+  <child link="tentacle_down_link_3"/>
+  <origin xyz="${link_2_length-link_2_circle*2} 0 0" rpy="0 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+<!-- ================================================================================================ -->
+<joint name="tentacle_up_link_4_joint" type="continuous">
+  <parent link="tentacle_up_link_3"/>
+  <child link="tentacle_up_link_4"/>
+  <origin xyz="${link_3_length-link_3_circle*2} 0 0" rpy="0 0 0"/>
+  <axis xyz="0 0 1"/>
+</joint>
+<joint name="tentacle_down_link_4_joint" type="continuous">
+  <parent link="tentacle_down_link_3"/>
+  <child link="tentacle_down_link_4"/>
+  <origin xyz="${link_3_length-link_3_circle*2} 0 0" rpy="0 0 0"/>
+  <axis xyz="0 0 1"/>
+  <!-- <sensor name="force_torque" type="force_torque">
+    <update_rate>100.0<update_rate>
+  </sensor> -->
+</joint>
+<!-- ================================================================================================ -->
+</robot>
