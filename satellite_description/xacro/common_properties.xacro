@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:property name="bus_frame_mass"             value="400" />
+<xacro:property name="bus_frame_length"           value="3"   />
+<xacro:property name="bus_frame_thickness"        value="0.3" />
+
+<xacro:property name="rw_mount_mass"              value="4"   />
+<xacro:property name="rw_mount_width"             value="2"   />
+<xacro:property name="rw_mount_height"            value="1"   />
+
+<xacro:property name="rw_mass"                    value="1"   />
+<xacro:property name="rw_height"                  value="0.1" />
+<xacro:property name="rw_radius"                  value="0.25"/>
+
+<xacro:property name="dummy_mass"                 value="44"  />
+<xacro:property name="dummy_height"               value="0.3" />
+<xacro:property name="dummy_width"                value="2"   />
+
+<xacro:property name="thruster_mass"              value="1"   />
+<xacro:property name="thruster_height"            value="0.05"/>
+<xacro:property name="thruster_radius"            value="0.05"/>
+<xacro:property name="thruster_bias"              value="0.1" />
+
+<xacro:property name="window_mass"                value="1"   />
+<xacro:property name="window_length"              value="2.4" />
+<xacro:property name="window_thickness"           value="0.3" />
+
+<xacro:property name="bus_camera_mass"            value="1"   />
+<xacro:property name="bus_camera_height"          value="0.05"/>
+<xacro:property name="bus_camera_length"          value="0.5" />
+
+<xacro:property name="arm_mount_mass"             value="1"   />
+<xacro:property name="arm_mount_height"           value="0.4" />
+<xacro:property name="arm_mount_radius"           value="0.15"/>
+<xacro:property name="arm_mount_ixx"              value="0.35"/>
+<xacro:property name="arm_mount_iyy"              value="0.04"/>
+<xacro:property name="arm_mount_izz"              value="0.02"/>
+<xacro:property name="arm_mount_bias"             value="0.1" />
+
+<xacro:property name="arm_link_radius"            value="0.15"/>
+<xacro:property name="arm_link_height"            value="0.3" />
+<xacro:property name="arm_link_1_mass"            value="20"  />
+<xacro:property name="arm_link_2_mass"            value="15"  />
+<xacro:property name="arm_link_3_mass"            value="10"  />
+<xacro:property name="arm_link_1_length"          value="4"   />
+<xacro:property name="arm_link_2_length"          value="3"   />
+<xacro:property name="arm_link_3_length"          value="1.85"/>
+<xacro:property name="arm_link_1_ixx"             value="0.312"/>
+<xacro:property name="arm_link_2_ixx"             value="0.229"/>
+<xacro:property name="arm_link_3_ixx"             value="0.15"/>
+<xacro:property name="arm_link_1_iyy"             value="31.526"/>
+<xacro:property name="arm_link_2_iyy"             value="13.598"/>
+<xacro:property name="arm_link_3_iyy"             value="3.761"/>
+<xacro:property name="arm_link_1_izz"             value="31.524"/>
+<xacro:property name="arm_link_2_izz"             value="13.596"/>
+<xacro:property name="arm_link_3_izz"             value="3.759"/>
+
+<!-- Material Definition -->
+<material name="white">
+    <color rgba="1 1 1 0.8"/>
+</material>
+<material name="red">
+    <color rgba="1 0 0 1"/>
+</material>
+<material name="orange">
+    <color rgba="1 0.3 0.1 1"/>
+</material>
+<material name="blue">
+    <color rgba="0.2 0.2 1 1"/>
+</material>
+<material name="green">
+    <color rgba="0.0 1.0 0.0 1"/>
+</material>
+<material name="black">
+    <color rgba="0 0 0 1"/>
+</material>
+<material name="grey">
+    <color rgba="0.7 0.7 0.7 1"/>
+</material>
+<material name="pink">
+    <color rgba="1 0.41 0.71 1"/>
+</material>
+<material name="cyan">
+    <color rgba="0 1 1 1"/>
+</material>
+<material name="brown">
+    <color rgba="0.35 0.22 0.15 1"/>
+</material>
+<material name="purple">
+    <color rgba="0.5 0 0.5 1"/>
+</material>
+<material name="yellow">
+    <color rgba="1 1 0 1"/>
+</material>
+</robot>
