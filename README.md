@@ -1,47 +1,22 @@
 # AstroROS
-Spacecraft Orbit/Attitude Simulation
+Spacecraft Orbit/Attitude Simulation for ROS2
 # Introduction
 This repository is for AstroROS : ADR simulator for On-Orbit Servicing.
 
 This repo is a fork repo from https://github.com/uscl/AstroROS .
 
 Every changes (even they are trivial) will be applied in this repo and revised version will be uploaded in original repository.
+
 # How to use AstroROS
-1. Install ROS noetic(ubuntu 20.04)
-2. Clone "reaction_wheel_tentacle_ws" (do not care about "orbit_simulator_matlab")
-```
-git clone https://github.com/MichaelBentlyOh/AstroROS.git
-```
-3. Get into "reaction_wheel_tentacle_ws" and build workspace
-```
-cd reaction_wheel_tentacle_ws && catkin build
-```
-4. Source "setup.bash" in workspace
-```
-source devel/setup.bash
-```
-5. Launch the project
-```
-roslaunch reaction_wheel_main gazebo.launch
-```
-Then, gazebo will open and there are two objects in gazebo world.
 
-6. give command topics to tentacle satellite.
-For demo, I use "rqt".
+AstroROS for ROS2 is on-progress.
 
-(2024.07.02) This repository doesn't have tentacle command publisher. After update, command publisher will be added in this repo.
+Please wait for ROS2. I will complete project ASAP!!!!!
 
-# Update Log
-2024.07.01 : fork from https://github.com/uscl/AstroROS
+# Update Log & Plan
 
-2024.07.02 : update readme.md
+2025.03.03 : Upload "satellite_description" folder
 
-2024.09.18 : update readme.md => add new plan
-# Update plan
-<1> Upload orbit perturbation plugin by gravity gradient (2024.10.31)
+2025.03.?? : update for orbit propagation
 
-<2> Implementation of orbit simulator in C++ with Eigen library(2024.11.31)
-
-<3> Migration from ROS1 to ROS2(2024.12.31)
-
-<4> Application into SpaceROS(https://github.com/space-ros) (2025.??.??)
+2025.09.?? : add impedance controller for tentacle grasp
