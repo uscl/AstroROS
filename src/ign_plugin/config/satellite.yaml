@@ -1,0 +1,6 @@
+semi_major:   7000000.0 # [m]
+eccentricity: 0.0       # X
+inclination:  45.0      # [deg]
+ascending:    0.0       # [deg]
+perigee:      0.0       # [deg]
+mean_anomaly: 0.0       # [deg]
