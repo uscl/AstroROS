@@ -17,6 +17,6 @@ Please wait for ROS2. I will complete project ASAP!!!!!
 
 2025.03.03 : Upload "satellite_description" folder
 
-2025.03.?? : update for orbit propagation
+2025.03.31 : update for orbit propagation
 
 2025.09.?? : add impedance controller for tentacle grasp
