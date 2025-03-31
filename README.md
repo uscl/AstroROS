@@ -11,8 +11,20 @@ Every changes (even they are trivial) will be applied in this repo and revised v
 
 AstroROS for ROS2 is on-progress.
 
-Please wait for ROS2. I will complete project ASAP!!!!!
+First, you have to install ROS2 Humble and ignition Fortress.
 
+And then, git clone this package.
+
+```
+mkdir -p astroros_ws && cd astroros_ws
+```
+```
+git clone https://github.com/MichaelBentleyOh/AstroROS
+```
+Finally build the package with colcon.
+```
+colcon build --symlink-install
+```
 # Update Log & Plan
 
 2025.03.03 : Upload "satellite_description" folder
