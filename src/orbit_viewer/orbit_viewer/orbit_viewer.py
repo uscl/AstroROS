@@ -1,99 +1,84 @@
-import rclpy
+import rclpy, csv, threading, numpy as np
 from rclpy.node import Node
-from rclpy.executors import SingleThreadedExecutor
+from rclpy.executors import MultiThreadedExecutor
 from std_msgs.msg import Float32MultiArray
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-import csv
 
 class OrbitPlotNode(Node):
     def __init__(self):
-        super().__init__("orbit_plot_node")
+        super().__init__('orbit_plot_node')
 
-        # ROS subscription
-        self.subscription = self.create_subscription(
-            Float32MultiArray,
-            '/satellite_orbit',
-            self.listener_callback,
-            10
-        )
+        self.create_subscription(Float32MultiArray,
+                                 '/satellite_orbit',
+                                 self.listener_callback, 10)
 
-        # Data storage for plotting
-        self.x_data = []
-        self.y_data = []
-        self.z_data = []
+        # trajectory data (protected by a lock – we use threads)
+        self._lock   = threading.Lock()
+        self.x_list, self.y_list, self.z_list = [], [], []
 
-        # Open CSV file once and append data
-        self.csv_file = open('data.csv', 'a', newline='')
+        self.csv_file   = open('data.csv', 'a', newline='')
         self.csv_writer = csv.writer(self.csv_file)
 
+    # ───────────────────────────────── ROS callback ────────────────────────────
     def listener_callback(self, msg):
-        """Callback function for ROS 2 subscriber."""
-        self.get_logger().info(f"Data received: {msg.data}")
+        if len(msg.data) < 3:
+            return
 
-        if len(msg.data) >= 3:
-            self.x_data.append(msg.data[0])
-            self.y_data.append(msg.data[1])
-            self.z_data.append(msg.data[2])
+        with self._lock:                         # thread‑safe append
+            self.x_list.append(float(msg.data[0]))
+            self.y_list.append(float(msg.data[1]))
+            self.z_list.append(float(msg.data[2]))
 
-            # Limit stored data to prevent memory overflow (optional)
-            if len(self.x_data) > 100:
-                self.x_data.pop(0)
-                self.y_data.pop(0)
-                self.z_data.pop(0)
+        # raw logging (no lock needed, csv handles its own buffering)
+        self.csv_writer.writerow(msg.data[:3])
 
-            # Write to CSV
-            self.csv_writer.writerow([msg.data[0], msg.data[1], msg.data[2]])
+    # snapshot gives the GUI thread a *consistent copy*
+    def snapshot(self):
+        with self._lock:
+            return (np.asarray(self.x_list, dtype=float),
+                    np.asarray(self.y_list, dtype=float),
+                    np.asarray(self.z_list, dtype=float))
 
     def destroy_node(self):
-        """Ensure the CSV file is properly closed on shutdown."""
         self.csv_file.close()
         super().destroy_node()
 
-
+# ──────────────────────────────────── main ────────────────────────────────────
 def main():
     rclpy.init()
-    node = OrbitPlotNode()
-
-    # Use an executor to manage spinning in a single thread
-    executor = SingleThreadedExecutor()
+    node      = OrbitPlotNode()
+    executor  = MultiThreadedExecutor()
     executor.add_node(node)
 
-    # Set up 3D plotting
+    # Matplotlib: one Line3D for the trail, one scatter for the satellite
     fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    ax.set_xlim([-10000000, 10000000])
-    ax.set_ylim([-10000000, 10000000])
-    ax.set_zlim([-10000000, 10000000])
-    ax.set_xlabel('x [m]')
-    ax.set_ylabel('y [m]')
-    ax.set_zlabel('z [m]')
+    ax  = fig.add_subplot(111, projection='3d')
+    limit = (-1.0e7, 1.0e7)
+    ax.set(xlim=limit, ylim=limit, zlim=limit,
+           xlabel='x [m]', ylabel='y [m]', zlabel='z [m]')
 
-    # We create a line object that we'll update on every iteration
-    line, = ax.plot([], [], [], marker='o', linestyle='-')
+    trail_line, = ax.plot([], [], [], lw=1.0)              # whole trajectory
+    head_scatter = ax.scatter([], [], [], s=30)            # current position
 
-    # Switch to interactive mode so plt.show() doesn't block
-    plt.ion()
-    plt.show()
+    plt.ion(); plt.show()
 
     try:
         while rclpy.ok():
-            # Spin node briefly (non-blocking)
-            executor.spin_once(timeout_sec=0.1)
+            executor.spin_once(0.01)                       # 100 Hz GUI update
 
-            # Update line data from the node's stored data
-            if node.x_data:
-                line.set_data(node.x_data, node.y_data)
-                line.set_3d_properties(node.z_data)
+            xs, ys, zs = node.snapshot()
+            if xs.size == 0:                               # nothing yet
+                continue
 
-            # Update the plot limits (if desired, or set them once above)
-            ax.set_xlim([-10000000, 10000000])
-            ax.set_ylim([-10000000, 10000000])
-            ax.set_zlim([-10000000, 10000000])
+            # update the trail
+            trail_line.set_data(xs, ys)
+            trail_line.set_3d_properties(zs)
 
-            # Redraw the figure
-            plt.draw()
-            plt.pause(0.01)
+            # update the head (single latest point)
+            head_scatter._offsets3d = (xs[-1:], ys[-1:], zs[-1:])
+
+            plt.draw(); plt.pause(0.001)
 
     except KeyboardInterrupt:
         pass
@@ -101,7 +86,6 @@ def main():
         node.destroy_node()
         executor.shutdown()
         rclpy.shutdown()
-
 
 if __name__ == '__main__':
     main()
